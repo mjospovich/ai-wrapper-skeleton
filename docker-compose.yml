@@ -6,12 +6,17 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      # Mount config.yaml if it exists (create it first from config.yaml.example)
       - ./config.yaml:/app/config.yaml:ro
+      # Mount wrapper.py so you can edit it without rebuilding
       - ./wrapper.py:/app/wrapper.py:ro
+      # Mount inputs and outputs directories
       - ./inputs:/app/inputs:ro
       - ./outputs:/app/outputs
     environment:
+      # Environment variables take precedence over config.yaml
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     command: python main.py --mode api
+    restart: unless-stopped
 

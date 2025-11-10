@@ -37,9 +37,6 @@ config.yaml
 *.swo
 *~
 
-# Docker
-.dockerignore
-
 # Outputs
 outputs/*
 !outputs/.gitkeep

@@ -11,68 +11,74 @@ A modular, Dockerized template repository for building custom AI API wrappers. E
 - 🎯 **Customizable**: Easy-to-modify wrapper functions for your specific use case
 - 📦 **Skeleton Template**: Clean starting point for your AI integration projects
 
-## Quick Start
+## Quick Start (Docker Only)
 
 ### Prerequisites
 
-- Docker and Docker Compose (recommended), or
-- Python 3.11+ with pip
+- **Docker** and **Docker Compose** (that's all you need!)
 
-### Setup
+### Setup in 3 Steps
 
-1. **Clone the repository**
+1. **Clone and enter the repository**
    ```bash
    git clone <your-repo-url>
    cd ai-wrapper-skeleton
    ```
 
-2. **Configure your API keys**
-
-   **Option A: Environment Variables (Recommended)**
-   ```bash
-   export OPENAI_API_KEY="your-key-here"
-   # or
-   export ANTHROPIC_API_KEY="your-key-here"
-   ```
-
-   **Option B: Config File**
+2. **Create your config file**
    ```bash
    cp config.yaml.example config.yaml
-   # Edit config.yaml and add your API keys
+   ```
+   
+   Then edit `config.yaml` and add your API key:
+   ```yaml
+   provider: openai
+   api_keys:
+     openai: your-actual-api-key-here
+   model: gpt-4o-mini
    ```
 
-3. **Customize the wrapper** (optional)
-   
-   Edit `wrapper.py` to implement your custom logic:
-   - `process_input()`: Transform your input data into a prompt
-   - `process_output()`: Parse and format the AI response
-
-4. **Run with Docker** (recommended)
+3. **Start the API server**
    ```bash
    docker-compose up
    ```
 
-   Or build and run manually:
-   ```bash
-   docker build -t ai-wrapper .
-   docker run -p 8000:8000 -e OPENAI_API_KEY=your-key ai-wrapper
-   ```
+That's it! The API will be running at `http://localhost:8000`
 
-5. **Run without Docker**
-   ```bash
-   pip install -r requirements.txt
-   python main.py
-   ```
+### Alternative: Using Environment Variables
+
+If you prefer environment variables for API keys (more secure), you still need to create `config.yaml` for provider/model settings, but you can skip adding the API key:
+
+```bash
+cp config.yaml.example config.yaml
+# Edit config.yaml but leave api_keys as placeholders
+# Then set environment variable:
+export OPENAI_API_KEY="your-key-here"
+docker-compose up
+```
+
+The environment variable will override the API key in the config file.
+
+### Running Without Docker
+
+If you have Python 3.11+ installed locally:
+```bash
+pip install -r requirements.txt
+python main.py
+```
 
 ## Usage
 
 ### API Mode (Default)
 
-Start the API server:
+**With Docker:**
+```bash
+docker-compose up
+```
+
+**Without Docker:**
 ```bash
 python main.py --mode api
-# or with Docker
-docker-compose up
 ```
 
 The API will be available at `http://localhost:8000`
@@ -89,9 +95,21 @@ curl -X POST http://localhost:8000/generate \
   -d '{"prompt": "What is the capital of France?"}'
 ```
 
+**Response:**
+```json
+{
+  "output": "The capital of France is Paris."
+}
+```
+
 ### CLI Mode
 
-Run as a command-line script:
+**With Docker:**
+```bash
+docker-compose run --rm ai-wrapper python main.py --mode cli --input inputs/example.json
+```
+
+**Without Docker:**
 ```bash
 python main.py --mode cli --input inputs/example.json
 ```
@@ -114,7 +132,7 @@ api_keys:
   openai: YOUR_OPENAI_API_KEY
   anthropic: YOUR_ANTHROPIC_API_KEY
 wrapper:
-  input_file: inputs/prompt.json
+  input_file: inputs/example.json
   output_format: json
 api:
   port: 8000
@@ -204,11 +222,29 @@ ai-wrapper-skeleton/
 
 ### Testing
 
+**With Docker:**
+```bash
+# Start the API
+docker-compose up -d
+
+# Test the API
+curl -X POST http://localhost:8000/generate \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Hello, world!"}'
+
+# Test CLI mode
+docker-compose run --rm ai-wrapper python main.py --mode cli
+
+# Stop the API
+docker-compose down
+```
+
+**Without Docker:**
 ```bash
 # Test API mode
 python main.py --mode api
 # In another terminal
-curl -X POST http://localhost:8000/generate -H "Content-Type: application/json" -d '{"prompt": "test"}'
+curl -X POST http://localhost:8000/generate -H "Content-Type: application/json" -d '{"prompt": "Hello, world!"}'
 
 # Test CLI mode
 python main.py --mode cli --input inputs/example.json

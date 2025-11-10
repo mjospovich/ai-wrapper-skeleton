@@ -65,7 +65,11 @@ async def generate(input_data: dict):
         raw_response = client.generate_response(prompt)
         output = process_output(raw_response)
         return output
+    except ValueError as e:
+        # Input validation errors
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        # Other errors (API failures, etc.)
         raise HTTPException(status_code=500, detail=str(e))
 
 def run_cli(input_file: str = None):
