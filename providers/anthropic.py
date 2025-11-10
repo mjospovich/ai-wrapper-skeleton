@@ -1,3 +1,10 @@
+"""
+Anthropic (Claude) Provider Implementation
+
+This is an example provider implementation showing how to integrate
+different AI providers. See providers/openai.py for another example.
+"""
+
 from .base import BaseAIClient
 from anthropic import Anthropic
 

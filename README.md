@@ -40,10 +40,32 @@ A modular, Dockerized template repository for building custom AI API wrappers. E
 
 3. **Start the API server**
    ```bash
-   docker-compose up
+   docker-compose up -d --build # or docker compose up -d --build 
    ```
 
 That's it! The API will be running at `http://localhost:8000`
+
+**Test it:**
+```bash
+curl -X POST http://localhost:8000/generate \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "What is the capital of France?"}'
+```
+
+### Quick Customization
+
+Once it's working, customize it for your use case:
+
+1. **Edit `wrapper.py`** - This is the main file to customize:
+   - `process_input()` - Transform your input data into an AI prompt
+   - `process_output()` - Parse and format the AI response
+
+2. **Restart Docker** - Changes to `wrapper.py` are automatically mounted:
+   ```bash
+   docker-compose restart
+   ```
+
+See the [Customization Example](#customization-example) section below for detailed examples.
 
 ### Alternative: Using Environment Variables
 

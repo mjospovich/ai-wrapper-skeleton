@@ -1,3 +1,12 @@
+"""
+OpenAI Provider Implementation
+
+This is an example provider implementation. To add a new provider:
+1. Copy this file and modify the class name and API calls
+2. Import the new class in providers/__init__.py
+3. Add it to the provider_map in main.py
+"""
+
 from openai import OpenAI
 from .base import BaseAIClient
 

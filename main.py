@@ -1,3 +1,18 @@
+"""
+MAIN.PY - Application Entry Point
+=================================
+
+This file handles:
+- Loading configuration (config.yaml or environment variables)
+- Setting up the AI provider client
+- Running the FastAPI server or CLI mode
+
+You typically don't need to modify this file unless:
+- Adding a new provider (see providers/ directory)
+- Changing API endpoints
+- Modifying CLI behavior
+"""
+
 import os
 import sys
 import json
@@ -7,12 +22,16 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from wrapper import process_input, process_output
-from providers import OpenAIClient, AnthropicClient  # Import others as needed
+from providers import OpenAIClient, AnthropicClient  # Import others as needed providers import OpenAIClient, AnthropicClient  # Import others as needed
+
+# ============================================================================
+# Configuration Loading
+# ============================================================================
 
 # Load environment variables
 load_dotenv()
 
-# Load config
+# Load config file
 config_path = Path('config.yaml')
 if not config_path.exists():
     print("Error: config.yaml not found. Please copy config.yaml.example to config.yaml and configure it.")
@@ -20,6 +39,10 @@ if not config_path.exists():
 
 with open(config_path, 'r') as f:
     config = yaml.safe_load(f)
+
+# ============================================================================
+# Provider Setup
+# ============================================================================
 
 # Get API keys from environment variables or config (env vars take precedence)
 def get_api_key(provider: str) -> str:
@@ -51,7 +74,10 @@ if not api_key or api_key.startswith('YOUR_'):
 
 client = ClientClass(api_key, config['model'])
 
-# FastAPI app
+# ============================================================================
+# FastAPI Application
+# ============================================================================
+
 app = FastAPI(title="AI Wrapper API", version="1.0.0")
 
 @app.get("/")
@@ -71,6 +97,10 @@ async def generate(input_data: dict):
     except Exception as e:
         # Other errors (API failures, etc.)
         raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# CLI Mode
+# ============================================================================
 
 def run_cli(input_file: str = None):
     """Run as CLI script instead of API server"""
@@ -104,6 +134,10 @@ def run_cli(input_file: str = None):
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
+
+# ============================================================================
+# Entry Point
+# ============================================================================
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='AI Wrapper - Custom AI API')
