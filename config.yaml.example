@@ -1,0 +1,11 @@
+provider: openai  # Options: openai, anthropic, etc.
+api_keys:
+  openai: YOUR_OPENAI_API_KEY  # Or use OPENAI_API_KEY env var
+  anthropic: YOUR_ANTHROPIC_API_KEY  # Or use ANTHROPIC_API_KEY env var
+model: gpt-4o-mini  # Or claude-3-5-sonnet-20241022, etc.
+wrapper:
+  input_file: inputs/example.json  # Path to user input file for CLI mode
+  output_format: json  # Output format preference (informational, actual parsing in wrapper.py)
+api:
+  port: 8000  # For the FastAPI server
+
