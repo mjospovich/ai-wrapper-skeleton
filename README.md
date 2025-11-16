@@ -21,7 +21,7 @@ A modular, Dockerized template repository for building custom AI API wrappers. E
 
 1. **Clone and enter the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/mjospovich/ai-wrapper-skeleton.git
    cd ai-wrapper-skeleton
    ```
 
